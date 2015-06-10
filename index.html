@@ -1,0 +1,81 @@
+<html>
+<head>
+	<title>Light-Curve</title>
+	<script type="text/javascript">
+
+	// Set up everything when the page loads
+	window.addEventListener("load", eventWindowLoaded, false);
+	var phaseCounter = 0;
+	var period = 3000; // Period in seconds
+	function eventWindowLoaded() {
+		console.log("Setting up.");
+		phaseCounter = 0;	
+		document.getElementById("illumination").innerHTML = "Starting";
+		window.setInterval(timerBeat, 1);
+	}
+	
+	function getHexRGB(r, g, b) {
+		hex = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+		firstChar = hex[Math.floor(r/16)];
+		secondChar = hex[r % 16];
+		rString = firstChar + secondChar;
+		firstChar = hex[Math.floor(g/16)];
+		secondChar = hex[g % 16];
+		rString+= firstChar + secondChar;
+		firstChar = hex[Math.floor(b/16)];
+		secondChar = hex[b % 16];
+		rString+= firstChar + secondChar;
+		return rString;
+	}
+	
+	function lightCurve_R(time) {
+		omega = Math.PI * 2 / period;
+		y = Math.sin(omega * phaseCounter);
+		y = (y + 1) /2;
+		y = y * 255;
+		return Math.round(y);
+	}
+
+	function lightCurve_G(time) {
+		omega = Math.PI * 2 / period;
+		y = Math.sin(3*omega * phaseCounter);
+		y = (y + 1) /2;
+		y = y * 255;
+		return Math.round(y);
+	}
+
+	function lightCurve_B(time) {
+		omega = Math.PI * 2 / period;
+		y = Math.sin(5*omega * phaseCounter);
+		y = (y + 1) /2;
+		y = y * 255;
+		return Math.round(y);
+	}
+	
+	
+	function timerBeat() {
+		phaseCounter++;
+		if (phaseCounter>period) phaseCounter = 0;
+		document.getElementById("timer").innerHTML = phaseCounter;
+		r = lightCurve_R(phaseCounter);
+		g = lightCurve_G(phaseCounter);
+		b = lightCurve_B(phaseCounter);
+		colourString = getHexRGB(r, g, b);
+		document.getElementById("illumination").innerHTML = r + " [" + colourString + "]";
+		document.getElementById("mastercell").bgColor = colourString;
+	}
+	
+	</script>
+</head>
+
+<body>
+	<h1>Light-Curve</h1>
+	
+	<table border='1'>
+		<tr><td id="mastercell" width="200px" height="200px" bgcolor="#aaaaaa">&nbsp;</td></tr>
+	</table>
+	
+	<span id="timer"></span>
+	<span id="illumination"></span>
+</body>
+</html>
